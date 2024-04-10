@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "611156995586",
+    "project_id": "university-management-sy-5a8a5",
+    "storage_bucket": "university-management-sy-5a8a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:611156995586:android:daf00192a2351635da011b",
+        "android_client_info": {
+          "package_name": "com.example.university_management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAT3MumOxL9NH_kV8kOOb0tGGE7p6cqEuk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
