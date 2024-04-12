@@ -51,7 +51,7 @@ class Dashboard extends StatelessWidget {
                             InkWell(
                               onTap: () {},
                               child: const Icon(
-                                Icons.sort,
+                                Icons.arrow_back,
                                 color: Colors.white,
                                 size: 40,
                               ),
