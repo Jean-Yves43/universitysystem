@@ -1,13 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:university_management/teacher/course_list.dart';
 
-class LoginPage extends StatelessWidget {
+Future<String> loginT(String username, String password) async {
+  try {
+    // Make HTTP POST request to the login API endpoint
+    var response = await http.post(
+      Uri.parse("http://10.0.2.2/universitymanagement_API/login.php"),
+      body: {'username': username, 'password': password},
+    );
+
+    if (response.statusCode == 200) {
+      // If login is successful, return the response body
+      return response.body;
+    } else {
+      // If there's an error, throw an exception
+      throw Exception('Failed to login');
+    }
+  } catch (e) {
+    // Handle network errors or server errors gracefully
+    print('Error: $e');
+    throw Exception('Failed to login');
+  }
+}
+
+class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
+  State<LoginPage> createState() => _LoginPageState();
+}
 
+class _LoginPageState extends State<LoginPage> {
+  TextEditingController usernameController = TextEditingController();
+
+  TextEditingController passwordController = TextEditingController();
+
+  bool loading = false;
+
+  // Function to show loading indicator
+  void signUserIn() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+
+  // Function to handle the login process
+  void handleLogin() async {
+    setState(() {
+      loading = true; // Show loading indicator
+    });
+
+    String username = usernameController.text.trim();
+    String password = passwordController.text.trim();
+
+    // Validate username and password
+    if (username.isNotEmpty && password.isNotEmpty) {
+      try {
+        String response = await loginT(username, password);
+        if (response != '[]') {
+          // Navigate to the dashboard page upon successful login
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const TeacherPage()));
+        } else {
+          // Print error message if user not found
+          print("User not found");
+        }
+      } catch (e) {
+        // Handle login errors gracefully
+        print('Login Error: $e');
+      }
+    } else {
+      // Show error message if username or password is empty
+      print('Please enter username and password');
+    }
+
+    setState(() {
+      loading = false; // Hide loading indicator
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -31,7 +110,7 @@ class LoginPage extends StatelessWidget {
               const SizedBox(
                 height: 15,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Container(
@@ -44,31 +123,31 @@ class LoginPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
-                    Text(
-                      'Hello teacher',
+                    const Text(
+                      'Hello dear Teacher',
                       style:
                           TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
-                    Text(
+                    const Text(
                       'Please Login to your account',
                       style: TextStyle(fontSize: 15, color: Colors.grey),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Container(
                       width: 250,
                       child: TextFormField(
-                        controller: emailController, // Assign email controller
-                        decoration: InputDecoration(
+                        controller:
+                            usernameController, // Assign email controller
+                        decoration: const InputDecoration(
                           labelText: 'Username',
-                          // suffixIcon: Icon(FontAwesomeIcons.envelope,size:17,),
                         ),
                       ),
                     ),
@@ -78,14 +157,14 @@ class LoginPage extends StatelessWidget {
                         controller:
                             passwordController, // Assign password controller
                         obscureText: true,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Password',
                           // suffixIcon: Icon(FontAwesomeIcons.envelope,size:17,),
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 20, 40, 20),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(20, 20, 40, 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -95,39 +174,33 @@ class LoginPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     InkWell(
-                      onTap: () {
-                        // Add login functionality here
-                        String email = emailController.text;
-                        String password = passwordController.text;
-
-                        // Validate email and password
-                        if (email.isNotEmpty && password.isNotEmpty) {
-                          // Perform login
-                          print('Username: $email, Password: $password');
-                          // Implement your login logic here
-                        } else {
-                          // Show error message or handle invalid input
-                          print('Please enter username and password');
-                        }
-                      },
+                      onTap:
+                          handleLogin, // Call handleLogin function when tapped
                       child: Container(
                         alignment: Alignment.center,
                         width: 250,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: Color.fromARGB(220, 6, 34, 190)),
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Call handleLogin function when button pressed
+                              handleLogin();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromARGB(220, 6, 34, 190),
+                            ),
+                            child: const Text(
+                              'Login',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ),

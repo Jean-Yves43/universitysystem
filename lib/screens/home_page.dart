@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:university_management/screens/login_pageAdmin.dart';
 //import 'package:university_management/student/student.dart';
-import 'package:university_management/teacher/studentListAndEnterGrade.dart';
+//import 'package:university_management/teacher/studentListAndEnterGrade.dart';
 // ignore: unused_import
 //import 'package:university_management/Admin/admin_page.dart';
 
@@ -136,7 +137,7 @@ class _SplashScreenState extends State<SplashScreen>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) => StudentGrade(),
+        builder: (BuildContext context) => LoginPageAdmin(),
       ),
     );
   }

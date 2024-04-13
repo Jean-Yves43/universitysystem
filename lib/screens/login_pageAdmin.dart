@@ -1,33 +1,91 @@
 import 'package:flutter/material.dart';
-import 'package:university_management/Admin/admin_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:university_management/Admin/admin_page.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+// Separate login logic into a separate function
+Future<String> login(String username, String password) async {
+  try {
+    // Make HTTP POST request to the login API endpoint
+    var response = await http.post(
+      Uri.parse("http://10.0.2.2/universitymanagement_API/login.php"),
+      body: {'username': username, 'password': password},
+    );
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
+    if (response.statusCode == 200) {
+      // If login is successful, return the response body
+      return response.body;
+    } else {
+      // If there's an error, throw an exception
+      throw Exception('Failed to login');
+    }
+  } catch (e) {
+    // Handle network errors or server errors gracefully
+    print('Error: $e');
+    throw Exception('Failed to login');
+  }
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPageAdmin extends StatefulWidget {
+  const LoginPageAdmin({Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    TextEditingController usernameController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
+  State<LoginPageAdmin> createState() => _LoginPageState();
+}
 
-    Future login() async {
-      String username = usernameController.text.toString();
-      String password = passwordController.text.toString();
-      print(username);
-      print(password);
-      var response = await http.get(Uri.parse(
-          "http://10.0.2.2/universitymanagement_API/login.php?username=$username&password=$password"));
+class _LoginPageState extends State<LoginPageAdmin> {
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  bool loading = false;
 
-      print(response.body);
-      return response.body;
-      // return json.decode(response.body);
+  // Function to show loading indicator
+  void signUserIn() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+
+  // Function to handle the login process
+  void handleLogin() async {
+    setState(() {
+      loading = true; // Show loading indicator
+    });
+
+    String username = usernameController.text.trim();
+    String password = passwordController.text.trim();
+
+    // Validate username and password
+    if (username.isNotEmpty && password.isNotEmpty) {
+      try {
+        String response = await login(username, password);
+        if (response != '[]') {
+          // Navigate to the dashboard page upon successful login
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => Dashboard()));
+        } else {
+          // Print error message if user not found
+          print("User not found");
+        }
+      } catch (e) {
+        // Handle login errors gracefully
+        print('Login Error: $e');
+      }
+    } else {
+      // Show error message if username or password is empty
+      print('Please enter username and password');
     }
 
+    setState(() {
+      loading = false; // Hide loading indicator
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -119,35 +177,17 @@ class _LoginPageState extends State<LoginPage> {
                       height: 20,
                     ),
                     InkWell(
-                      onTap: () {
-                        // Add login functionality here
-                        String email = usernameController.text;
-                        String password = passwordController.text;
-
-                        // Validate email and password
-                        if (email.isNotEmpty && password.isNotEmpty) {
-                          // Perform login
-                          print('Username: $email, Password: $password');
-                          // Implement your login logic here
-                        } else {
-                          // Show error message or handle invalid input
-                          print('Please enter username and password');
-                        }
-                      },
+                      onTap:
+                          handleLogin, // Call handleLogin function when tapped
                       child: Container(
                         alignment: Alignment.center,
                         width: 250,
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: ElevatedButton(
-                            onPressed: () async {
-                              String r = await login();
-                              if (r != '[]') {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => Dashboard()));
-                              } else {
-                                print("User not found");
-                              }
+                            onPressed: () {
+                              // Call handleLogin function when button pressed
+                              handleLogin();
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:

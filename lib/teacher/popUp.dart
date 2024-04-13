@@ -17,7 +17,7 @@ class PopUp extends StatelessWidget {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Enter a new Grade for $studentName ($studentId)'),
+            title: Text('Enter a new Grade for $studentName'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -50,11 +50,20 @@ class PopUp extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               offset: const Offset(0, 5),
-              color: Theme.of(context).colorScheme.primary.withOpacity(.2),
+              color: Colors.grey.withOpacity(.2),
               spreadRadius: 2,
               blurRadius: 5,
             ),
           ],
+        ),
+        child: Center(
+          child: Text(
+            'Modify',
+            style: TextStyle(
+              color: Colors.lightBlue,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ),
     );

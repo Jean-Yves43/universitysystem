@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:university_management/screens/login_pageAdmin.dart';
+import 'package:university_management/screens/login_pageStudent.dart';
+import 'package:university_management/screens/login_pageTeacher.dart';
 
 class ItemDashboard extends StatelessWidget {
   final String title, image;
@@ -22,12 +24,13 @@ class ItemDashboard extends StatelessWidget {
                   if (title == 'Admin') {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      MaterialPageRoute(builder: (context) => LoginPageAdmin()),
                     );
                   } else if (title == 'Teacher') {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      MaterialPageRoute(
+                          builder: (context) => LoginPageStudent()),
                     );
                   } else {
                     Navigator.push(

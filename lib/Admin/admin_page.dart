@@ -76,7 +76,7 @@ class Dashboard extends StatelessWidget {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Dashbord",
+                              Text("WELCOME",
                                   style: TextStyle(
                                     fontSize: 30,
                                     color: Colors.white,
@@ -86,12 +86,6 @@ class Dashboard extends StatelessWidget {
                               SizedBox(
                                 height: 10,
                               ),
-                              Text("last Update 7 aug 2023",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white54,
-                                    letterSpacing: 1,
-                                  ))
                             ]),
                       )
                     ]),
