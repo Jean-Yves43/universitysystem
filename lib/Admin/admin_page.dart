@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:university_management/Admin/Assign/tab_bar_assign.dart';
 import 'package:university_management/Admin/Create_Account/tab_bar.dart';
 
 // ignore: must_be_immutable
@@ -121,17 +122,23 @@ class Dashboard extends StatelessWidget {
                                   MaterialPageRoute(
                                       builder: (context) => TabCreataAccount()),
                                 );
-                              } else if (index == 2) {
+                              } else if (index == 1) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => TabCreataAccount()),
                                 );
+                              } else if (index == 2) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Department()),
+                                );
                               } else {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => TabCreataAccount()),
+                                      builder: (context) => Department()),
                                 );
                               }
                             },

@@ -65,8 +65,8 @@ class _LoginPageState extends State<LoginPage> {
         String response = await loginT(username, password);
         if (response != '[]') {
           // Navigate to the dashboard page upon successful login
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const TeacherPage()));
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => TeacherPage()));
         } else {
           // Print error message if user not found
           print("User not found");
