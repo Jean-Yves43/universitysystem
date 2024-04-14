@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:university_management/teacher/course_list.dart';
+import 'package:university_management/teacher/teacher_page.dart';
 
 Future<String> loginT(String username, String password) async {
   try {

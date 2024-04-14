@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:university_management/teacher/teacher_page.dart';
 //import 'package:university_management/screens/login_pageAdmin.dart';
-import 'package:university_management/teacher/course_list.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
