@@ -95,28 +95,6 @@ class _StudentPageState extends State<StudentPage> {
           height: size.height,
           child: Column(
             children: <Widget>[
-              // const Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-              //   children: <Widget>[
-              //     Text(
-              //       "Loyality Cards",
-              //       style: TextStyle(
-              //           color: Colors.grey,
-              //           fontWeight: FontWeight.bold,
-              //           fontSize: 20),
-              //     ),
-              //     Text(
-              //       "Menu",
-              //       style: TextStyle(
-              //           color: Colors.black,
-              //           fontWeight: FontWeight.bold,
-              //           fontSize: 20),
-              //     ),
-              //   ],
-              // ),
-              // const SizedBox(
-              //   height: 10,
-              // ),
               AnimatedOpacity(
                 duration: const Duration(milliseconds: 200),
                 opacity: closeTopContainer ? 0 : 1,
