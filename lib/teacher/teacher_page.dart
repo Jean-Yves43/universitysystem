@@ -33,7 +33,7 @@ class _TeacherPageState extends State<TeacherPage> {
   }
 
   static Future getAllLines() async {
-    var url = "http://10.0.2.2/universitymanagement_API/get_all_lines.php";
+    var url = "http://10.0.2.2/universitymanagement_API/get_all_courses.php";
     var response = await http.get(Uri.parse(url));
     return json.decode(response.body);
   }
@@ -72,7 +72,7 @@ class _TeacherPageState extends State<TeacherPage> {
                             fontSize: 28, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        post['credit'],
+                        post['maxPlaces'],
                         style:
                             const TextStyle(fontSize: 17, color: Colors.grey),
                       ),
@@ -128,31 +128,45 @@ class _TeacherPageState extends State<TeacherPage> {
                     child: categoriesScroller),
               ),
               Expanded(
-                  child: ListView.builder(
-                      controller: controller,
-                      itemCount: itemsData.length,
-                      itemBuilder: (context, index) {
-                        double scale = 1.0;
-                        if (topContainer > 0.5) {
-                          scale = index + 0.5 - topContainer;
-                          if (scale < 0) {
-                            scale = 0;
-                          } else if (scale > 1) {
-                            scale = 1;
+                child: itemsData.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No courses selected',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        controller: controller,
+                        itemCount: itemsData.length,
+                        itemBuilder: (context, index) {
+                          double scale = 1.0;
+                          if (topContainer > 0.5) {
+                            scale = index + 0.5 - topContainer;
+                            if (scale < 0) {
+                              scale = 0;
+                            } else if (scale > 1) {
+                              scale = 1;
+                            }
                           }
-                        }
-                        return Opacity(
-                          opacity: scale,
-                          child: Transform(
-                            transform: Matrix4.identity()..scale(scale, scale),
-                            alignment: Alignment.bottomCenter,
-                            child: Align(
+                          return Opacity(
+                            opacity: scale,
+                            child: Transform(
+                              transform: Matrix4.identity()
+                                ..scale(scale, scale),
+                              alignment: Alignment.bottomCenter,
+                              child: Align(
                                 heightFactor: 0.7,
                                 alignment: Alignment.topCenter,
-                                child: itemsData[index]),
-                          ),
-                        );
-                      })),
+                                child: itemsData[index],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
             ],
           ),
         ),
