@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:university_management/Admin/Create_Account/admin_account/aa.dart';
+import 'package:university_management/Admin/Create_Account/student_account/sa.dart';
+import 'package:university_management/Admin/Create_Account/teacher_account/ta.dart';
 //import 'package:university_management/login_page.dart';
 
 class TabCreataAccount extends StatelessWidget {
@@ -49,11 +51,11 @@ class TabCreataAccount extends StatelessWidget {
           Expanded(
             child: TabBarView(children: [
               // Content for each tab
-              const Account(),
+              const AdminAccount(),
 
-              const Account(),
+              const TeacherAccount(),
 
-              const Account(),
+              const StudentAccount(),
             ]),
           )
         ]),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:university_management/Admin/Assign/tab_bar_assign.dart';
+
+import 'package:university_management/Admin/CreateCourse/Assign/tab_bar.dart';
 import 'package:university_management/Admin/Create_Account/tab_bar.dart';
 
 // ignore: must_be_immutable
@@ -11,15 +12,15 @@ class Dashboard extends StatelessWidget {
   List imgSrc = [
     "assets/account+.png",
     "assets/course.png",
-    "assets/stdlist.png",
-    "assets/assign.jpeg"
+    
+    
   ];
 
   List titles = [
     "Create/delete account",
     "Create/delete course",
-    "Assign Course",
-    "Members' List"
+  
+  
   ];
 
   @override
@@ -122,25 +123,14 @@ class Dashboard extends StatelessWidget {
                                   MaterialPageRoute(
                                       builder: (context) => TabCreataAccount()),
                                 );
-                              } else if (index == 1) {
+                              } else if  (index == 1) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => TabCreataAccount()),
+                                      builder: (context) => TabCreateCourse()),
                                 );
-                              } else if (index == 2) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Department()),
-                                );
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Department()),
-                                );
-                              }
+                              
+                              };
                             },
                             child: Container(
                               margin: const EdgeInsets.symmetric(
