@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 //import 'package:university_management/student/constants.dart';
 import 'package:http/http.dart' as http;
-import 'package:university_management/student/pageStudent/add_Course.dart';
-import 'package:university_management/student/pageStudent/viewGrade.dart';
-import 'package:university_management/teacher/studentListAndEnterGrade.dart';
+import 'package:university_management/student/add_Course.dart';
+import 'package:university_management/student/viewGrade.dart';
+//import 'package:university_management/teacher/student_grade.dart';
 
 class StudentPage extends StatefulWidget {
   const StudentPage({super.key});
@@ -195,8 +195,10 @@ class CategoriesScroller extends StatelessWidget {
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const Add_Course()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Add_Course()));
                 },
                 child: Container(
                   width: 150,

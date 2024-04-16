@@ -3,55 +3,25 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
-
-
 class BSSCourseAccount extends StatefulWidget {
-
-
-  const  BSSCourseAccount({Key? key})
-      : super(key: key);
+  const BSSCourseAccount({Key? key}) : super(key: key);
 
   @override
- _BSSCourseAccountState createState() =>
-      _BSSCourseAccountState();
-
-
-
-  
+  _BSSCourseAccountState createState() => _BSSCourseAccountState();
 }
 
-// List<String> name = [
-//   'Manouan Jean-yves',
-//   'Dosso Marienne',
-//   'Konan Brandon',
-//   'Nguessan Yapi',
-//   'Mbazumutima Teddy',
-// ];
-
-// List<String> id = ['106077', '105098', '105034', '109773', '107466'];
-
 class _BSSCourseAccountState extends State<BSSCourseAccount> {
-   _BSSCourseAccountState(
-
-      {Key? key});
+  _BSSCourseAccountState({Key? key});
 
   final paymentListKey = GlobalKey<_BSSCourseAccountState>();
 
-
-
-
   static Future getAllCourse() async {
-   
     var url = "http://10.0.2.2/api/BBScourseList.php";
     var response = await http.get(Uri.parse(url));
 
     print(response);
     return json.decode(response.body);
   }
-
-          
-  
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +33,6 @@ class _BSSCourseAccountState extends State<BSSCourseAccount> {
           SizedBox(
             height: 50,
           ),
-
           Center(
             child: Column(
               children: <Widget>[
@@ -72,14 +41,14 @@ class _BSSCourseAccountState extends State<BSSCourseAccount> {
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Container(
-                          //color: Colors.white,
+                            //color: Colors.white,
                             alignment: Alignment.center,
                             margin: const EdgeInsets.only(top: 20),
                             child: const CircularProgressIndicator());
                       }
                       if (!snapshot.hasData || snapshot.data == null) {
                         return Container(
-                          //color: Colors.white,
+                            //color: Colors.white,
                             alignment: Alignment.center,
                             margin: const EdgeInsets.only(top: 20),
                             child: const Text('No data.'));
@@ -97,9 +66,7 @@ class _BSSCourseAccountState extends State<BSSCourseAccount> {
                             var data = snapshot.data[index];
 
                             return InkWell(
-                              onTap: () {
-
-                              },
+                              onTap: () {},
                               child: Card(
                                 margin: const EdgeInsets.all(10),
                                 color: Colors.white,
@@ -126,9 +93,7 @@ class _BSSCourseAccountState extends State<BSSCourseAccount> {
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
-
                                       ),
-
                                     )
                                   ],
                                 ),
@@ -139,9 +104,6 @@ class _BSSCourseAccountState extends State<BSSCourseAccount> {
               ],
             ),
           ),
-
-
-
         ]));
   }
 }

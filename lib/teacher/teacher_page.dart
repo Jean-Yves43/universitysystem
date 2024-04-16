@@ -2,10 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class TeacherPage extends StatelessWidget {
+class TeacherPage extends StatefulWidget {
   final int teacherId;
 
   const TeacherPage({Key? key, required this.teacherId}) : super(key: key);
+
+  @override
+  _TeacherPageState createState() => _TeacherPageState();
+}
+
+class _TeacherPageState extends State<TeacherPage> {
+  late Future<List<dynamic>> _teacherCoursesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _teacherCoursesFuture = getTeacherCourses(widget.teacherId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,20 +29,20 @@ class TeacherPage extends StatelessWidget {
           title: const Text('Teacher Page'),
         ),
         body: FutureBuilder<List<dynamic>>(
-          future: getTeacherCourses(teacherId),
+          future: _teacherCoursesFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else {
               List<dynamic> responseList = snapshot.data ?? [];
               return Column(
                 children: <Widget>[
-                  const CategoriesScroller(),
+                  CategoriesScroller(),
                   Expanded(
                     child: responseList.isEmpty
-                        ? const Center(
+                        ? Center(
                             child: Text(
                               'No courses selected',
                               style: TextStyle(

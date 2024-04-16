@@ -4,18 +4,19 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:university_management/teacher/teacher_page.dart';
 
-Future<void> loginTeacher(
-    BuildContext context, String username, String password) async {
+Future<void> loginTeacher(BuildContext context, String username,
+    String password, String teacherID) async {
   // Construct the URL
   final url = Uri.parse(
       "http://10.0.2.2/universitymanagement_API/Teacher_api/login_teacher.php");
 
-  // Send a POST request with the username and password as the body
+  // Send a POST request with the username, password, and teacherID as the body
   final response = await http.post(
     url,
     body: {
       'username': username,
       'password': password,
+      'teacherID': teacherID,
     },
   );
 
@@ -55,6 +56,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController teacherIDController =
+      TextEditingController(); // New field
   bool loading = false;
 
   void handleLogin(BuildContext context) async {
@@ -64,15 +67,19 @@ class _LoginPageState extends State<LoginPage> {
 
     String username = usernameController.text.trim();
     String password = passwordController.text.trim();
+    String teacherID = teacherIDController.text.trim(); // Get teacherID
 
-    if (username.isNotEmpty && password.isNotEmpty) {
+    if (username.isNotEmpty && password.isNotEmpty && teacherID.isNotEmpty) {
+      // Check if all fields are filled
       try {
-        await loginTeacher(context, username, password);
+        await loginTeacher(
+            context, username, password, teacherID); // Pass teacherID
       } catch (e) {
         print('Login Error: $e');
       }
     } else {
-      print('Please enter username and password');
+      print(
+          'Please enter username, password, and teacherID'); // Handle if any field is empty
     }
 
     setState(() {
@@ -142,6 +149,16 @@ class _LoginPageState extends State<LoginPage> {
                         obscureText: true,
                         decoration: const InputDecoration(
                           labelText: 'Password',
+                        ),
+                      ),
+                    ),
+                    Container(
+                      // New field for teacherID
+                      width: 250,
+                      child: TextFormField(
+                        controller: teacherIDController,
+                        decoration: const InputDecoration(
+                          labelText: 'Teacher ID',
                         ),
                       ),
                     ),
