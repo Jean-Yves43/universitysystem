@@ -12,6 +12,8 @@ class PopUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController gradeController = TextEditingController();
+
     return InkWell(
       onTap: () {
         showDialog(
@@ -21,13 +23,14 @@ class PopUp extends StatelessWidget {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 30),
+                SizedBox(height: 10),
                 TextFormField(
+                  controller: gradeController,
                   decoration: const InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(),
-                    hintText: '',
+                    hintText: 'Enter new grade',
                   ),
                 ),
               ],
@@ -35,7 +38,16 @@ class PopUp extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context); // Close the AlertDialog
+                  String newGrade = gradeController.text;
+                  // Validate and handle new grade
+                  if (newGrade.isNotEmpty) {
+                    Navigator.pop(context);
+                  } else {
+                    // Handle empty grade
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Please enter a new grade')),
+                    );
+                  }
                 },
                 child: const Text('OK'),
               ),

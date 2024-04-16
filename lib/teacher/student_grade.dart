@@ -76,7 +76,7 @@ class _StudentGradeState extends State<StudentGrade> {
                   final student = students[index];
                   return ListTile(
                     title: Text(
-                      student['name'],
+                      student['studentName'],
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 18.0,
@@ -84,7 +84,7 @@ class _StudentGradeState extends State<StudentGrade> {
                       ),
                     ),
                     subtitle: Text(
-                      student['id'],
+                      student['coursID'],
                       style: TextStyle(color: Colors.grey),
                     ),
                     trailing: Row(

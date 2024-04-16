@@ -2,22 +2,24 @@
 header('Content-Type: application/json');
 include "dbconnection.php";
 
-if(isset($_GET['teacherID'])) {
+if(isset($_GET['teacherID'], $_POST['studentID'], $_POST['newGrade'])) {
     $teacherId = $_GET['teacherID'];
+    $studentId = $_POST['studentID'];
+    $newGrade = $_POST['newGrade'];
     
-    // Prepare and execute the SQL statement with the provided teacher ID
-    $stmt = $db->prepare("SELECT studentName,courseName FROM student,student_course,course
-    where student.studentID=student_course.studentID and student_course.studentID=course.courseID and
-    teacherID=?");
-    $stmt->execute([$teacherId]);
+    // Prepare and execute the SQL statement to update the grade
+    $stmt = $db->prepare("UPDATE student_course SET grade = ? WHERE studentID = ? AND teacherID = ?");
+    $stmt->execute([$newGrade, $studentId, $teacherId]);
     
-    // Fetch the results
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Return the results as JSON
-    echo json_encode($result);
+    // Check if the update was successful
+    $rowCount = $stmt->rowCount();
+    if ($rowCount > 0) {
+        echo json_encode(array("success" => true, "message" => "Grade updated successfully"));
+    } else {
+        echo json_encode(array("success" => false, "message" => "Failed to update grade"));
+    }
 } else {
-    // If no teacher ID is provided, return an error message
-    echo json_encode(array("error" => "No teacher ID provided"));
+    // If required parameters are not provided, return an error message
+    echo json_encode(array("error" => "Incomplete data provided"));
 }
-
+?>
