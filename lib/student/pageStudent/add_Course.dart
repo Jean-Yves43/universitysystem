@@ -1,39 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:university_management/Admin/Assign/tab_bar_assign.dart';
+
+import 'package:university_management/student/HomePagestudent.dart';
 
 
 
 
-class AssignCourse extends StatefulWidget {
-  const AssignCourse({Key? key}) : super(key: key);
+
+class Add_Course extends StatefulWidget {
+  const Add_Course({Key? key}) : super(key: key);
 
   @override
-  State<AssignCourse> createState() => _AssignCourse();
+  State<Add_Course> createState() => _Add_CourseState();
 }
 
-class _AssignCourse extends State<AssignCourse> {
-  TextEditingController CourseIDController = TextEditingController();
-  TextEditingController TeacherIDController = TextEditingController();
+class _Add_CourseState extends State<Add_Course> {
+  TextEditingController courseIDController = TextEditingController();
+  
+  TextEditingController courseNameController = TextEditingController();
  
   String userType = 'Student';
   
   get users => null; // Default user type
 
    Future saveUser() async {
-    String CourseID = CourseIDController.text;
-    String TeacherID = TeacherIDController.text;
+    String courseID = courseIDController.text;
+   
+    String courseName= courseNameController.text;
     
 
-    var url = "http://10.0.2.2/api/saveAssignedCourse.php";
-
-
+    var url = "http://10.0.2.2/api/registerCourseStem.php";
     var response = await http.post(Uri.parse(url),
     body: {
-      'CourseID': CourseIDController.toString(),
-      'TeacherID': TeacherIDController.toString(),
-      
+      'courseID': courseID.toString(),
+     
+      'courseName': courseName.toString(),
+     
     }
     );
 
@@ -44,8 +47,8 @@ class _AssignCourse extends State<AssignCourse> {
 
   }
 
-//class RegistrationForm extends StatelessWidget {
-  //const RegistrationForm({Key? key}) : super(key: key);
+//class RegistrationFormAdmin extends StatelessWidget {
+ // const RegistrationFormAdmin({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +68,7 @@ class _AssignCourse extends State<AssignCourse> {
                         margin: const EdgeInsets.only(top: 30),
                         alignment: Alignment.center,
                         child: const Text(
-                          'Assing Course',
+                          'Create course',
                           style: TextStyle(fontSize: 25, color: Colors.white),
                         ),
                       ),
@@ -73,31 +76,36 @@ class _AssignCourse extends State<AssignCourse> {
                         height: 30,
                       ),
                       TextFormField(
-                        controller: CourseIDController,
+                        controller: courseIDController,
                         decoration: const InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(),
-                            hintText: 'Enter the name of the course'),
+                            hintText: 'Enter the course ID'),
                       ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      
                       const SizedBox(
                         height: 20,
                       ),
                       TextFormField(
-                        controller: TeacherIDController,
+                        controller: courseNameController,
                         decoration: const InputDecoration(
-                          
                             filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(),
-                            hintText: 'Enter the id'),
+                            hintText: 'Enter course name'),
                       ),
                       const SizedBox(
                         height: 20,
                       ),
                       
+                      const SizedBox(
+                        height: 20,
+                      ),
                      
-                      
                       const SizedBox(
                         height: 55,
                       ),
@@ -113,7 +121,7 @@ class _AssignCourse extends State<AssignCourse> {
                           child: const Center(
                             
                             child: Text(
-                              'Assign',
+                              'Add',
                               style:
                                   TextStyle(fontSize: 20, color: Colors.white),
                             ),
@@ -122,7 +130,7 @@ class _AssignCourse extends State<AssignCourse> {
                       ), 
                       
                       onPressed: () {
-                      MaterialPageRoute(builder: (context) => Department());
+                      MaterialPageRoute(builder: (context) => StudentPage());
                       //_registerUser(userType);
                       saveUser();
                     },
@@ -139,32 +147,34 @@ class _AssignCourse extends State<AssignCourse> {
         ));
   }
 
-  void _AssignCoursee(String userType) {
-    String CourseID = CourseIDController.text.trim();
-    String TeacherID = TeacherIDController.text.trim();
-    ;
-    
+   void _registerUser(String userType) {
+    String courseID  = courseIDController.text.trim();
+  
+    String courseName = courseNameController.text.trim();
     
 
-    if (CourseID.isNotEmpty && TeacherID.isNotEmpty ) {
+
+    if (courseID .isNotEmpty  && courseName.isNotEmpty   ) {
       // Add the user to the list
       users.add({
-        'CourseID': CourseID,
-        'TeacherID': TeacherID,
+        'courseID': courseID,
+        
+        'courseName' : courseName,
         
         'type': userType,
       });
 
       // Clear the text fields after registration
-      CourseIDController.clear();
-      TeacherIDController.clear();
-      
-      
+      courseIDController.clear();
+    
+    
+      courseNameController.clear();
+     
 
-      // Navigate to the ListUser screen to view all registered courses
+      // Navigate to the ListUser screen to view all registered users
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Department(
+        MaterialPageRoute(builder: (context) => StudentPage(
 
         )),
       );
@@ -173,4 +183,4 @@ class _AssignCourse extends State<AssignCourse> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill all fields')));
     }
   }
-} 
+}

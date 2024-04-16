@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:university_management/Admin/Create_Account/admin_account/aa.dart';
+import 'package:university_management/Admin/CreateCourse/Assign/createCourseBSS.dart';
+import 'package:university_management/Admin/CreateCourse/Assign/createCourseSTEM.dart';
+
 //import 'package:university_management/login_page.dart';
 
 class TabCreateCourse extends StatelessWidget {
@@ -44,9 +46,9 @@ class TabCreateCourse extends StatelessWidget {
           Expanded(
             child: TabBarView(children: [
               // Content for each tab
-              const Account(),
+              const BSSCourseAccount(),
 
-              const Account(),
+              const STEMCourseAccount(),
             ]),
           )
         ]),

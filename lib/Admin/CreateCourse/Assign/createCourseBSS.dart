@@ -1,122 +1,147 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-class Account extends StatefulWidget {
-  const Account({Key? key});
+
+
+
+class BSSCourseAccount extends StatefulWidget {
+
+
+  const  BSSCourseAccount({Key? key})
+      : super(key: key);
 
   @override
-  State<Account> createState() => _AccountState();
+ _BSSCourseAccountState createState() =>
+      _BSSCourseAccountState();
+
+
+
+  
 }
 
-List<String> name = [
-  'Manouan Jean-yves',
-  'Dosso Marienne',
-  'Konan Brandon',
-  'Nguessan Yapi',
-  'Mbazumutima Teddy',
-];
+// List<String> name = [
+//   'Manouan Jean-yves',
+//   'Dosso Marienne',
+//   'Konan Brandon',
+//   'Nguessan Yapi',
+//   'Mbazumutima Teddy',
+// ];
 
-List<String> id = ['106077', '105098', '105034', '109773', '107466'];
+// List<String> id = ['106077', '105098', '105034', '109773', '107466'];
 
-class _AccountState extends State<Account> {
+class _BSSCourseAccountState extends State<BSSCourseAccount> {
+   _BSSCourseAccountState(
+
+      {Key? key});
+
+  final paymentListKey = GlobalKey<_BSSCourseAccountState>();
+
+
+
+
+  static Future getAllCourse() async {
+   
+    var url = "http://10.0.2.2/api/BBScourseList.php";
+    var response = await http.get(Uri.parse(url));
+
+    print(response);
+    return json.decode(response.body);
+  }
+
+          
+  
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: ListView.builder(
-          itemCount: name.length,
-          shrinkWrap: true,
-          itemBuilder: (BuildContext context, int index) => Container(
-            width: MediaQuery.of(context).size.width,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-            child: Card(
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0.0),
-              ),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10.0, vertical: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          name[index],
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Text(
-                          id[index],
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 10.0),
-                          child: TextButton(
-                            onPressed: () {},
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.lightBlue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                            child: const Text(
-                              'Modify',
-                              style: TextStyle(
+    return Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: 30,
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          SizedBox(
+            height: 50,
+          ),
+
+          Center(
+            child: Column(
+              children: <Widget>[
+                FutureBuilder(
+                    future: getAllCourse(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          //color: Colors.white,
+                            alignment: Alignment.center,
+                            margin: const EdgeInsets.only(top: 20),
+                            child: const CircularProgressIndicator());
+                      }
+                      if (!snapshot.hasData || snapshot.data == null) {
+                        return Container(
+                          //color: Colors.white,
+                            alignment: Alignment.center,
+                            margin: const EdgeInsets.only(top: 20),
+                            child: const Text('No data.'));
+                      }
+
+                      if (snapshot.hasError)
+                        return Center(child: Text('${snapshot.error}'));
+
+                      return ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          physics: const ScrollPhysics(),
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            var data = snapshot.data[index];
+
+                            return InkWell(
+                              onTap: () {
+
+                              },
+                              child: Card(
+                                margin: const EdgeInsets.all(10),
                                 color: Colors.white,
+                                elevation: 1,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ListTile(
+                                      leading: const Icon(
+                                        Icons.person,
+                                        color: Colors.tealAccent,
+                                        size: 25,
+                                      ),
+                                      title: Text(
+                                        'courseName: '
+                                        '${data['courseName']}',
+                                        style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      subtitle: Text(
+                                        'courseID: '
+                                        '${data['courseID']}',
+                                        style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+
+                                      ),
+
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 10), // Adding space between buttons
-                        Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 10.0),
-                          child: TextButton(
-                            onPressed: () {},
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.lightBlue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                            child: const Text(
-                              'Delete',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+                            );
+                          });
+                    })
+              ],
             ),
           ),
-        ),
-      ),
-    );
+
+
+
+        ]));
   }
 }

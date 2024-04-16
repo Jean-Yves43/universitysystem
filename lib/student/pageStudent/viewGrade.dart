@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 //import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
-class StemList extends StatefulWidget {
- const StemList({Key? key})
+class SeeGrade extends StatefulWidget {
+ const SeeGrade({Key? key})
       : super(key: key);
 
   @override
- _CourseSectionState createState() =>
-      _CourseSectionState();
+ _SeeGradeSectionState createState() =>
+      _SeeGradeSectionState();
 }
 
 // List<String> bss_cour = [
@@ -30,19 +30,19 @@ class StemList extends StatefulWidget {
 //   'PSY2305'
 // ];
 
-class _CourseSectionState extends State<StemList> {
-  _CourseSectionState(
+class _SeeGradeSectionState extends State<SeeGrade> {
+  _SeeGradeSectionState(
 
       {Key? key});
 
-  final paymentListKey = GlobalKey<_CourseSectionState>();
+  final paymentListKey = GlobalKey<_SeeGradeSectionState>();
 
 
 
 
   static Future getAllCourse() async {
-   
-    var url = "http://10.0.2.2/api/GetAssignCourseSTEM.php";
+    
+    var url = "http://10.0.2.2/api/ViewGrade.php";
     var response = await http.get(Uri.parse(url));
 
     print(response);
@@ -227,14 +227,14 @@ class _CourseSectionState extends State<StemList> {
                                       
                                       title: Text(
                                         'CourseName: '
-                                        '${data['CourseName']}',
+                                        '${data['courseName']}',
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       subtitle: Text(
-                                        'TeacherName: '
-                                        '${data['TeacherName']}',
+                                        'Grade: '
+                                        '${data['grade']}',
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
