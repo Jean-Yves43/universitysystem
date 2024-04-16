@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:university_management/teacher/teacher_page.dart';
+import 'package:university_management/screens/dashboard.dart';
+//import 'package:university_management/teacher/teacher_page.dart';
 //import 'package:university_management/screens/login_pageAdmin.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -134,7 +135,7 @@ class _SplashScreenState extends State<SplashScreen>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) => TeacherPage(),
+        builder: (BuildContext context) => DashboardScreen(),
       ),
     );
   }

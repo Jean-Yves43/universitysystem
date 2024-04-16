@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class StudentList extends StatefulWidget {
-  const StudentList({super.key});
+  const StudentList({super.key, required teacherId});
 
   @override
   State<StudentList> createState() => _StudentListState();

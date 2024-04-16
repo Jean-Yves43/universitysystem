@@ -1,23 +1,39 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:university_management/teacher/popUp.dart';
 
 class StudentGrade extends StatefulWidget {
-  StudentGrade({Key? key});
+  final int teacherId;
+
+  StudentGrade({Key? key, required this.teacherId}) : super(key: key);
 
   @override
-  State<StudentGrade> createState() => _AccountState();
+  State<StudentGrade> createState() => _StudentGradeState();
 }
 
-List<String> studentNames = [
-  'Konan Brandon',
-  'Manouan Jean',
-  'Dosso Marienne',
-  'Sangaré Yoxan',
-];
+class _StudentGradeState extends State<StudentGrade> {
+  late Future<List<Map<String, dynamic>>> _studentsFuture;
 
-List<String> ids = ['106088', '106077', '105733', '105987'];
+  @override
+  void initState() {
+    super.initState();
+    _studentsFuture = getAllStudents(widget.teacherId);
+  }
 
-class _AccountState extends State<StudentGrade> {
+  Future<List<Map<String, dynamic>>> getAllStudents(int teacherId) async {
+    final url = Uri.parse(
+        "http://10.0.2.2/universitymanagement_API/Teacher_api/get_all_student.php?teacher_id=$teacherId");
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      return List<Map<String, dynamic>>.from(data);
+    } else {
+      throw Exception('Failed to load student data');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,105 +60,78 @@ class _AccountState extends State<StudentGrade> {
       ),
       body: Container(
         color: Colors.white,
-        child: ListView.builder(
-          itemCount: studentNames.length,
-          shrinkWrap: true,
-          itemBuilder: (BuildContext context, int index) => Container(
-            width: MediaQuery.of(context).size.width,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-            child: Card(
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0.0),
-              ),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10.0, vertical: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          studentNames[index],
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 5.0,
-                        ),
-                        Text(
-                          ids[index],
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                      ],
+        child: FutureBuilder<List<Map<String, dynamic>>>(
+          future: _studentsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else {
+              final List<Map<String, dynamic>> students = snapshot.data!;
+              return ListView.builder(
+                itemCount: students.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  final student = students[index];
+                  return ListTile(
+                    title: Text(
+                      student['name'],
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    Row(
+                    subtitle: Text(
+                      student['id'],
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 10.0),
-                          child: TextButton(
-                            onPressed: () {},
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.lightBlue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                            child: const Text(
-                              '90',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
+                        TextButton(
+                          onPressed: () {},
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.lightBlue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
                             ),
                           ),
+                          child: Text(
+                            student['grade'],
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
-                        const SizedBox(
-                            width: 10), // Adding space between buttons
-                        Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 10.0),
-                          child: TextButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => PopUp(
-                                  studentId: ids[index],
-                                  studentName: studentNames[index],
-                                ),
-                              );
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.lightBlue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
+                        SizedBox(width: 10),
+                        TextButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => PopUp(
+                                studentId: student['id'],
+                                studentName: student['name'],
                               ),
+                            );
+                          },
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.lightBlue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
                             ),
-                            child: const Text(
-                              'Modify',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
+                          ),
+                          child: Text(
+                            'Modify',
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+                  );
+                },
+              );
+            }
+          },
         ),
       ),
     );

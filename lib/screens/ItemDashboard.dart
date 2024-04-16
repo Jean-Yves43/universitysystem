@@ -24,18 +24,20 @@ class ItemDashboard extends StatelessWidget {
                   if (title == 'Admin') {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPageAdmin()),
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPageAdmin()),
                     );
                   } else if (title == 'Teacher') {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => LoginPageStudent()),
+                          builder: (context) => const LoginPage()),
                     );
                   } else {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPageStudent()),
                     );
                   }
                 },

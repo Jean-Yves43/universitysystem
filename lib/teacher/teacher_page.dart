@@ -1,177 +1,116 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-//import 'package:university_management/student/constants.dart';
 import 'package:http/http.dart' as http;
-import 'package:university_management/teacher/studentListAndEnterGrade.dart';
-import 'package:university_management/teacher/student_list.dart';
+import 'dart:convert';
 
-class TeacherPage extends StatefulWidget {
-  const TeacherPage({super.key});
+class TeacherPage extends StatelessWidget {
+  final int teacherId;
 
-  @override
-  State<TeacherPage> createState() => _TeacherPageState();
-}
-
-class _TeacherPageState extends State<TeacherPage> {
-  final CategoriesScroller categoriesScroller = const CategoriesScroller();
-  ScrollController controller = ScrollController();
-  bool closeTopContainer = false;
-  double topContainer = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    getAllLines();
-    controller.addListener(() {
-      double value = controller.offset / 119;
-
-      setState(() {
-        topContainer = value;
-        closeTopContainer = controller.offset > 50;
-      });
-    });
-  }
-
-  static Future getAllLines() async {
-    var url = "http://10.0.2.2/universitymanagement_API/get_all_courses.php";
-    var response = await http.get(Uri.parse(url));
-    return json.decode(response.body);
-  }
-
-  List<Widget> itemsData = [];
-
-  void getPostsData() async {
-    try {
-      List<dynamic> responseList = await getAllLines();
-
-      List<Widget> listItems = [];
-      for (var post in responseList) {
-        listItems.add(
-          Container(
-            height: 150,
-            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(20.0)),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(color: Colors.black.withAlpha(100), blurRadius: 10.0),
-              ],
-            ),
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        post['courseName'],
-                        style: const TextStyle(
-                            fontSize: 28, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        post['maxPlaces'],
-                        style:
-                            const TextStyle(fontSize: 17, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      }
-      setState(() {
-        itemsData = listItems;
-      });
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
-  }
+  const TeacherPage({Key? key, required this.teacherId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-    final double categoryHeight = size.height * 0.30;
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          leading: const Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-          ),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.person, color: Colors.black),
-              onPressed: () {},
-            )
-          ],
+          title: const Text('Teacher Page'),
         ),
-        body: Container(
-          height: size.height,
-          child: Column(
-            children: <Widget>[
-              AnimatedOpacity(
-                duration: const Duration(milliseconds: 200),
-                opacity: closeTopContainer ? 0 : 1,
-                child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    width: size.width,
-                    alignment: Alignment.topCenter,
-                    height: closeTopContainer ? 0 : categoryHeight,
-                    child: categoriesScroller),
-              ),
-              Expanded(
-                child: itemsData.isEmpty
-                    ? Center(
-                        child: Text(
-                          'No courses selected',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    : ListView.builder(
-                        controller: controller,
-                        itemCount: itemsData.length,
-                        itemBuilder: (context, index) {
-                          double scale = 1.0;
-                          if (topContainer > 0.5) {
-                            scale = index + 0.5 - topContainer;
-                            if (scale < 0) {
-                              scale = 0;
-                            } else if (scale > 1) {
-                              scale = 1;
-                            }
-                          }
-                          return Opacity(
-                            opacity: scale,
-                            child: Transform(
-                              transform: Matrix4.identity()
-                                ..scale(scale, scale),
-                              alignment: Alignment.bottomCenter,
-                              child: Align(
-                                heightFactor: 0.7,
-                                alignment: Alignment.topCenter,
-                                child: itemsData[index],
+        body: FutureBuilder<List<dynamic>>(
+          future: getTeacherCourses(teacherId),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else {
+              List<dynamic> responseList = snapshot.data ?? [];
+              return Column(
+                children: <Widget>[
+                  const CategoriesScroller(),
+                  Expanded(
+                    child: responseList.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No courses selected',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          );
-                        },
-                      ),
-              ),
-            ],
-          ),
+                          )
+                        : ListView.builder(
+                            itemCount: responseList.length,
+                            itemBuilder: (context, index) {
+                              var course = responseList[index];
+                              return Container(
+                                height: 100,
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 5),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withAlpha(100),
+                                      blurRadius: 10.0,
+                                    ),
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20.0, vertical: 5),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            course['courseName'] ?? '',
+                                            style: const TextStyle(
+                                                fontSize: 28,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            course['courseID'].toString(),
+                                            style: const TextStyle(
+                                                fontSize: 17,
+                                                color: Colors.grey),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                  ),
+                ],
+              );
+            }
+          },
         ),
       ),
     );
+  }
+
+  Future<List<dynamic>> getTeacherCourses(int teacherId) async {
+    var url =
+        "http://10.0.2.2/universitymanagement_API/Teacher_api/get_teacher_courses.php?teacher_id=$teacherId";
+    try {
+      var response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+      throw e;
+    }
   }
 }
 
@@ -194,8 +133,7 @@ class CategoriesScroller extends StatelessWidget {
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => StudentGrade()));
+                  // Handle onTap event
                 },
                 child: Container(
                   width: 150,
@@ -226,10 +164,7 @@ class CategoriesScroller extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const StudentList()));
+                  // Handle onTap event
                 },
                 child: Container(
                   width: 150,
