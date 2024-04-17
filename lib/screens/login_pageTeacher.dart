@@ -1,48 +1,27 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:university_management/teacher/teacher_page.dart';
 
-Future<void> loginTeacher(BuildContext context, String username,
-    String password, String teacherID) async {
-  // Construct the URL
-  final url = Uri.parse(
-      "http://10.0.2.2/universitymanagement_API/Teacher_api/login_teacher.php");
+// Separate login logic into a separate function
+Future<String> login(int teacherID, String password) async {
+  try {
+    // Make HTTP POST request to the login API endpoint
+    var response = await http.post(
+      Uri.parse(
+          "http://10.0.2.2/universitymanagement_API/Teacher_api/login_teacher.php"),
+      body: {'teacherID': teacherID.toString(), 'password': password},
+    );
 
-  // Send a POST request with the username, password, and teacherID as the body
-  final response = await http.post(
-    url,
-    body: {
-      'username': username,
-      'password': password,
-      'teacherID': teacherID,
-    },
-  );
-
-  // Handle the response
-  if (response.statusCode == 200) {
-    // Parse the JSON response
-    Map<String, dynamic> responseData = jsonDecode(response.body);
-
-    // Check if the login was successful
-    if (responseData.containsKey('success') &&
-        responseData['success'] == true) {
-      // Extract teacherID from the response data
-      int teacherID = responseData['teacherID'] as int;
-      // Navigate to TeacherPage with teacherID
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => TeacherPage(teacherId: teacherID),
-        ),
-      );
+    if (response.statusCode == 200) {
+      // If login is successful, return the response body
+      return response.body;
     } else {
-      // Show error message
-      print(responseData['message']);
+      // If there's an error, throw an exception
+      throw Exception('Failed to login');
     }
-  } else {
-    // Show error message
-    print('Failed to login. Please try again.');
+  } catch (e) {
+    // Handle network errors or server errors gracefully
+    throw Exception('Failed to login. Please check your internet connection.');
   }
 }
 
@@ -54,37 +33,55 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController usernameController = TextEditingController();
+  TextEditingController teacherIDController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController teacherIDController =
-      TextEditingController(); // New field
   bool loading = false;
 
-  void handleLogin(BuildContext context) async {
+  // Function to handle the login process
+  void handleLogin() async {
     setState(() {
-      loading = true;
+      loading = true; // Show loading indicator
     });
 
-    String username = usernameController.text.trim();
+    int? teacherID = int.tryParse(teacherIDController.text.trim());
     String password = passwordController.text.trim();
-    String teacherID = teacherIDController.text.trim(); // Get teacherID
 
-    if (username.isNotEmpty && password.isNotEmpty && teacherID.isNotEmpty) {
-      // Check if all fields are filled
+    // Validate username and password
+    if (teacherID != null && teacherID > 0 && password.isNotEmpty) {
       try {
-        await loginTeacher(
-            context, username, password, teacherID); // Pass teacherID
+        String response = await login(teacherID, password);
+        if (response != '[]') {
+          // Navigate to the dashboard page upon successful login
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => TeacherPage(
+                    teacherId: teacherID, // Pass the actual teacherID
+                  )));
+        } else {
+          // Show error message if user not found
+          showSnackbar('Invalid username or password. Please try again.');
+        }
       } catch (e) {
-        print('Login Error: $e');
+        // Handle login errors gracefully
+        showSnackbar('Failed to login. Please try again later.');
       }
     } else {
-      print(
-          'Please enter username, password, and teacherID'); // Handle if any field is empty
+      // Show error message if username or password is empty
+      showSnackbar('Please enter a valid username and password.');
     }
 
     setState(() {
-      loading = false;
+      loading = false; // Hide loading indicator
     });
+  }
+
+  // Function to show a snackbar with the given message
+  void showSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
@@ -95,22 +92,26 @@ class _LoginPageState extends State<LoginPage> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
                 Color.fromARGB(220, 6, 34, 190),
                 Color.fromARGB(255, 226, 248, 85),
                 Color.fromARGB(255, 255, 251, 248),
-              ],
-            ),
-          ),
+              ])),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 40),
-              const SizedBox(height: 15),
-              const SizedBox(height: 30),
+              const SizedBox(
+                height: 40,
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              const SizedBox(
+                height: 30,
+              ),
               Container(
                 height: 480,
                 width: 325,
@@ -121,44 +122,42 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 30),
+                    const SizedBox(
+                      height: 30,
+                    ),
                     const Text(
-                      'Hello dear Teacher',
+                      'Hello dear Teacher ',
                       style:
                           TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     const Text(
                       'Please Login to your account',
                       style: TextStyle(fontSize: 15, color: Colors.grey),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Container(
                       width: 250,
                       child: TextFormField(
-                        controller: usernameController,
+                        controller:
+                            teacherIDController, // Assign email controller
                         decoration: const InputDecoration(
-                          labelText: 'Username',
+                          labelText: 'TeacherID',
                         ),
                       ),
                     ),
                     Container(
                       width: 250,
                       child: TextFormField(
-                        controller: passwordController,
+                        controller:
+                            passwordController, // Assign password controller
                         obscureText: true,
                         decoration: const InputDecoration(
                           labelText: 'Password',
-                        ),
-                      ),
-                    ),
-                    Container(
-                      // New field for teacherID
-                      width: 250,
-                      child: TextFormField(
-                        controller: teacherIDController,
-                        decoration: const InputDecoration(
-                          labelText: 'Teacher ID',
                         ),
                       ),
                     ),
@@ -167,21 +166,26 @@ class _LoginPageState extends State<LoginPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text('Forget Password?',
-                              style: TextStyle(
-                                  color: Color.fromARGB(220, 6, 34, 190)))
+                          Text(
+                            'Forget Password?',
+                            style: TextStyle(
+                                color: Color.fromARGB(220, 6, 34, 190)),
+                          )
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     InkWell(
+                      onTap: loading ? null : handleLogin,
                       child: Container(
                         alignment: Alignment.center,
                         width: 250,
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: ElevatedButton(
-                            onPressed: () => handleLogin(context),
+                            onPressed: loading ? null : handleLogin,
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   const Color.fromARGB(220, 6, 34, 190),
@@ -189,10 +193,9 @@ class _LoginPageState extends State<LoginPage> {
                             child: const Text(
                               'Login',
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),

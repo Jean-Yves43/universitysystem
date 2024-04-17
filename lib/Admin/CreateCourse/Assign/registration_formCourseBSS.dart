@@ -3,58 +3,48 @@ import 'package:http/http.dart' as http;
 
 import 'package:university_management/Admin/CreateCourse/Assign/tab_bar.dart';
 
-
-
-
-
-class CreateAdminAccount extends StatefulWidget {
-  const CreateAdminAccount({Key? key}) : super(key: key);
+class CreateAdminCourse extends StatefulWidget {
+  const CreateAdminCourse({Key? key}) : super(key: key);
 
   @override
-  State<CreateAdminAccount> createState() => _CreateAdminAccountState();
+  State<CreateAdminCourse> createState() => _CreateAdminAccountState();
 }
 
-class _CreateAdminAccountState extends State<CreateAdminAccount> {
+class _CreateAdminAccountState extends State<CreateAdminCourse> {
   TextEditingController courseIDController = TextEditingController();
   TextEditingController courseDepController = TextEditingController();
   TextEditingController courseNameController = TextEditingController();
   TextEditingController creditController = TextEditingController();
   TextEditingController maxPlacesController = TextEditingController();
- TextEditingController teacherIDController = TextEditingController();
+  TextEditingController teacherIDController = TextEditingController();
   String userType = 'Student';
-  
+
   get users => null; // Default user type
 
-   Future saveUser() async {
+  Future saveUser() async {
     String courseID = courseIDController.text;
     String courseDep = courseDepController.text;
-    String courseName= courseNameController.text;
+    String courseName = courseNameController.text;
     String credit = creditController.text;
     String maxPlaces = maxPlacesController.text;
     String teacherID = teacherIDController.text;
-    
 
     var url = "http://10.0.2.2/api/registerCourseStem.php";
-    var response = await http.post(Uri.parse(url),
-    body: {
+    var response = await http.post(Uri.parse(url), body: {
       'courseID': courseID.toString(),
       'courseDep': courseDep.toString(),
       'courseName': courseName.toString(),
-      'credit'   : credit.toString(),
-      'maxPlaces' : maxPlaces.toString(),
-      'teacherID' : teacherID.toString(),
-    }
-    );
-
+      'credit': credit.toString(),
+      'maxPlaces': maxPlaces.toString(),
+      'teacherID': teacherID.toString(),
+    });
 
     print(response.body);
-   // return json.decode(response.body);
-
-
+    // return json.decode(response.body);
   }
 
 //class RegistrationFormAdmin extends StatelessWidget {
- // const RegistrationFormAdmin({Key? key}) : super(key: key);
+  // const RegistrationFormAdmin({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +112,6 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
                             border: OutlineInputBorder(),
                             hintText: 'Enter the number of credits'),
                       ),
-                      
                       const SizedBox(
                         height: 20,
                       ),
@@ -134,8 +123,7 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
                             border: OutlineInputBorder(),
                             hintText: 'Enter the maximum number of places'),
                       ),
-
-                       const SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TextFormField(
@@ -149,35 +137,33 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
                       const SizedBox(
                         height: 20,
                       ),
-                     
                       const SizedBox(
                         height: 55,
                       ),
                       MaterialButton(
-                      child: Center(
-                        child: Container(
-                          decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              color: Colors.white),
-                          height: 45,
-                          width: 90,
-                          child: const Center(
-                            
-                            child: Text(
-                              'Assign',
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white),
+                        child: Center(
+                          child: Container(
+                            decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: Colors.white),
+                            height: 45,
+                            width: 90,
+                            child: const Center(
+                              child: Text(
+                                'Assign',
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white),
+                              ),
                             ),
                           ),
                         ),
-                      ), 
-                      
-                      onPressed: () {
-                      MaterialPageRoute(builder: (context) => TabCreateCourse());
-                      //_registerUser(userType);
-                      saveUser();
-                    },
+                        onPressed: () {
+                          MaterialPageRoute(
+                              builder: (context) => TabCreateCourse());
+                          //_registerUser(userType);
+                          saveUser();
+                        },
                       ),
                       const SizedBox(
                         height: 15,
@@ -191,31 +177,35 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
         ));
   }
 
-   void _registerUser(String userType) {
-    String courseID  = courseIDController.text.trim();
+  void _registerUser(String userType) {
+    String courseID = courseIDController.text.trim();
     String courseDep = courseDepController.text.trim();
     String courseName = courseNameController.text.trim();
     String credit = creditController.text.trim();
     String maxPlaces = maxPlacesController.text.trim();
-   String teacherID = teacherIDController.text.trim();
+    String teacherID = teacherIDController.text.trim();
 
-
-    if (courseID .isNotEmpty && courseDep.isNotEmpty && courseName.isNotEmpty && credit.isNotEmpty && maxPlaces.isNotEmpty && teacherID.isNotEmpty  ) {
+    if (courseID.isNotEmpty &&
+        courseDep.isNotEmpty &&
+        courseName.isNotEmpty &&
+        credit.isNotEmpty &&
+        maxPlaces.isNotEmpty &&
+        teacherID.isNotEmpty) {
       // Add the user to the list
       users.add({
         'courseID': courseID,
         'courseDep': courseDep,
-        'courseName' : courseName,
-         'credit' : credit,
-         'maxPlaces': maxPlaces,
-         'teacherID': teacherID,
+        'courseName': courseName,
+        'credit': credit,
+        'maxPlaces': maxPlaces,
+        'teacherID': teacherID,
         'type': userType,
       });
 
       // Clear the text fields after registration
       courseIDController.clear();
       courseDepController.clear();
-    
+
       courseNameController.clear();
       creditController.clear();
       maxPlacesController.clear();
@@ -224,13 +214,12 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
       // Navigate to the ListUser screen to view all registered users
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => TabCreateCourse(
-
-        )),
+        MaterialPageRoute(builder: (context) => TabCreateCourse()),
       );
     } else {
       // Show an error message if any field is empty
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill all fields')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Please fill all fields')));
     }
   }
 }

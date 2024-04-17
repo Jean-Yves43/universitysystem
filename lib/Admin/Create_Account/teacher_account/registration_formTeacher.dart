@@ -3,9 +3,6 @@ import 'package:http/http.dart' as http;
 
 import 'package:university_management/Admin/Create_Account/teacher_account/ta.dart';
 
-
-
-
 class CreateAdminAccount extends StatefulWidget {
   const CreateAdminAccount({Key? key}) : super(key: key);
 
@@ -21,10 +18,10 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   String userType = 'Student';
-  
+
   get users => null; // Default user type
 
-   Future saveUser() async {
+  Future saveUser() async {
     String fullName = fullNameController.text;
     String userName = usernameController.text;
     String password = passwordController.text;
@@ -33,26 +30,21 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
     String address = addressController.text;
 
     var url = "http://10.0.2.2/api/registrationFormTeacher.php";
-    var response = await http.post(Uri.parse(url),
-    body: {
+    var response = await http.post(Uri.parse(url), body: {
       'fullname': fullName.toString(),
       'username': userName.toString(),
       'password': password.toString(),
-      'department'      : department.toString(),
-      'address' : address.toString(),
-      'phone' :  phone.toString(),
-    }
-    );
-
+      'department': department.toString(),
+      'address': address.toString(),
+      'phone': phone.toString(),
+    });
 
     print(response.body);
-   // return json.decode(response.body);
-
-
+    // return json.decode(response.body);
   }
 
 //class RegistrationFormAdmin extends StatelessWidget {
- // const RegistrationFormAdmin({Key? key}) : super(key: key);
+  // const RegistrationFormAdmin({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -113,14 +105,13 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
                         height: 20,
                       ),
                       TextFormField(
-                        controller: phoneNumberController ,
+                        controller: phoneNumberController,
                         decoration: const InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(),
                             hintText: 'Enter the phone number'),
                       ),
-                      
                       const SizedBox(
                         height: 20,
                       ),
@@ -136,7 +127,7 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
                         height: 20,
                       ),
                       TextFormField(
-                         controller: DepartmentController,
+                        controller: DepartmentController,
                         decoration: const InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
@@ -147,30 +138,29 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
                         height: 55,
                       ),
                       MaterialButton(
-                      child: Center(
-                        child: Container(
-                          decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              color: Colors.white),
-                          height: 45,
-                          width: 90,
-                          child: const Center(
-                            
-                            child: Text(
-                              'Assign',
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white),
+                        child: Center(
+                          child: Container(
+                            decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: Colors.white),
+                            height: 45,
+                            width: 90,
+                            child: const Center(
+                              child: Text(
+                                'Create',
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white),
+                              ),
                             ),
                           ),
                         ),
-                      ), 
-                      
-                      onPressed: () {
-                      MaterialPageRoute(builder: (context) => TeacherAccount());
-                      //_registerUser(userType);
-                      saveUser();
-                    },
+                        onPressed: () {
+                          MaterialPageRoute(
+                              builder: (context) => TeacherAccount());
+                          //_registerUser(userType);
+                          saveUser();
+                        },
                       ),
                       const SizedBox(
                         height: 15,
@@ -184,23 +174,28 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
         ));
   }
 
-   void _registerUser(String userType) {
+  void _registerUser(String userType) {
     String fullName = fullNameController.text.trim();
     String username = usernameController.text.trim();
     String password = passwordController.text.trim();
-    String department= DepartmentController.text.trim();
+    String department = DepartmentController.text.trim();
     String address = addressController.text.trim();
     String phone = phoneNumberController.text.trim();
 
-    if (fullName.isNotEmpty && username.isNotEmpty && password.isNotEmpty && department.isNotEmpty && address.isNotEmpty && phone.isEmpty) {
+    if (fullName.isNotEmpty &&
+        username.isNotEmpty &&
+        password.isNotEmpty &&
+        department.isNotEmpty &&
+        address.isNotEmpty &&
+        phone.isEmpty) {
       // Add the user to the list
       users.add({
         'fullName': fullName,
         'username': username,
-        'password' : password,
-         'department' : department,
-         'address' : address,
-         'phone': phone,
+        'password': password,
+        'department': department,
+        'address': address,
+        'phone': phone,
         'type': userType,
       });
 
@@ -215,13 +210,12 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
       // Navigate to the ListUser screen to view all registered users
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => TeacherAccount(
-
-        )),
+        MaterialPageRoute(builder: (context) => TeacherAccount()),
       );
     } else {
       // Show an error message if any field is empty
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill all fields')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Please fill all fields')));
     }
   }
 }

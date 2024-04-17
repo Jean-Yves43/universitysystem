@@ -35,7 +35,7 @@ class _TeacherPageState extends State<TeacherPage> {
               return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
-            } else {
+            } else if (snapshot.hasData) {
               List<dynamic> responseList = snapshot.data ?? [];
               return Column(
                 children: <Widget>[
@@ -103,6 +103,8 @@ class _TeacherPageState extends State<TeacherPage> {
                   ),
                 ],
               );
+            } else {
+              return Center(child: Text('No data available'));
             }
           },
         ),
@@ -112,7 +114,7 @@ class _TeacherPageState extends State<TeacherPage> {
 
   Future<List<dynamic>> getTeacherCourses(int teacherId) async {
     var url =
-        "http://10.0.2.2/universitymanagement_API/Teacher_api/get_teacher_courses.php?teacher_id=$teacherId";
+        "http://10.0.2.2/universitymanagement_API/Teacher_api/get_all_teacher_courses.php?teacher_id=$teacherId";
     try {
       var response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -128,7 +130,7 @@ class _TeacherPageState extends State<TeacherPage> {
 }
 
 class CategoriesScroller extends StatelessWidget {
-  const CategoriesScroller({Key? key});
+  const CategoriesScroller({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +148,8 @@ class CategoriesScroller extends StatelessWidget {
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  // Handle onTap event
+                  // Handle assign grades action
+                  // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => AssignGradesPage()));
                 },
                 child: Container(
                   width: 150,
@@ -177,7 +180,8 @@ class CategoriesScroller extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  // Handle onTap event
+                  // Handle view student list action
+                  // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => StudentListPage()));
                 },
                 child: Container(
                   width: 150,
