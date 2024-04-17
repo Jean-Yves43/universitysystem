@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:university_management/Admin/CreateCourse/Assign/registration_formCourseBSS.dart';
+
 import 'package:university_management/Admin/Create_Account/admin_account/registration_formAdmin.dart';
 
 class AdminAccount extends StatefulWidget {

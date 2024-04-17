@@ -3,18 +3,18 @@ import 'package:http/http.dart' as http;
 
 import 'package:university_management/Admin/Create_Account/teacher_account/ta.dart';
 
-class CreateAdminAccount extends StatefulWidget {
-  const CreateAdminAccount({Key? key}) : super(key: key);
+class CreateStudentAccount extends StatefulWidget {
+  const CreateStudentAccount({Key? key}) : super(key: key);
 
   @override
-  State<CreateAdminAccount> createState() => _CreateAdminAccountState();
+  State<CreateStudentAccount> createState() => _CreateAdminAccountState();
 }
 
-class _CreateAdminAccountState extends State<CreateAdminAccount> {
+class _CreateAdminAccountState extends State<CreateStudentAccount> {
   TextEditingController fullNameController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController DepartmentController = TextEditingController();
+  TextEditingController DepController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   String userType = 'Student';
@@ -25,11 +25,11 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
     String fullName = fullNameController.text;
     String userName = usernameController.text;
     String password = passwordController.text;
-    String department = DepartmentController.text;
+    String department = DepController.text;
     String phone = phoneNumberController.text;
     String address = addressController.text;
 
-    var url = "http://10.0.2.2/api/registrationFormTeacher.php";
+    var url = "http://10.0.2.2/api/registrationFormStudent.php";
     var response = await http.post(Uri.parse(url), body: {
       'fullname': fullName.toString(),
       'username': userName.toString(),
@@ -64,7 +64,7 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
                         margin: const EdgeInsets.only(top: 30),
                         alignment: Alignment.center,
                         child: const Text(
-                          'Create account',
+                          'Create teacher account',
                           style: TextStyle(fontSize: 25, color: Colors.white),
                         ),
                       ),
@@ -127,7 +127,7 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
                         height: 20,
                       ),
                       TextFormField(
-                        controller: DepartmentController,
+                        controller: DepController,
                         decoration: const InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
@@ -178,7 +178,7 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
     String fullName = fullNameController.text.trim();
     String username = usernameController.text.trim();
     String password = passwordController.text.trim();
-    String department = DepartmentController.text.trim();
+    String department = DepController.text.trim();
     String address = addressController.text.trim();
     String phone = phoneNumberController.text.trim();
 
@@ -203,7 +203,7 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
       fullNameController.clear();
       usernameController.clear();
       passwordController.clear();
-      DepartmentController.clear();
+      DepController.clear();
       addressController.clear();
       phoneNumberController.clear();
 

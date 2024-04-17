@@ -3,22 +3,11 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
-
-
 class TeacherAccount extends StatefulWidget {
-
-
-  const  TeacherAccount({Key? key})
-      : super(key: key);
+  const TeacherAccount({Key? key}) : super(key: key);
 
   @override
- _TeacherAccountState createState() =>
-      _TeacherAccountState();
-
-
-
-  
+  _TeacherAccountState createState() => _TeacherAccountState();
 }
 
 // List<String> name = [
@@ -32,26 +21,17 @@ class TeacherAccount extends StatefulWidget {
 // List<String> id = ['106077', '105098', '105034', '109773', '107466'];
 
 class _TeacherAccountState extends State<TeacherAccount> {
-   _TeacherAccountState(
-
-      {Key? key});
+  _TeacherAccountState({Key? key});
 
   final paymentListKey = GlobalKey<_TeacherAccountState>();
 
-
-
-
   static Future getAllCourse() async {
-   
     var url = "http://10.0.2.2/api/teacherAccountList.php";
     var response = await http.get(Uri.parse(url));
 
     print(response);
     return json.decode(response.body);
   }
-
-          
-  
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +43,6 @@ class _TeacherAccountState extends State<TeacherAccount> {
           SizedBox(
             height: 50,
           ),
-
           Center(
             child: Column(
               children: <Widget>[
@@ -72,14 +51,14 @@ class _TeacherAccountState extends State<TeacherAccount> {
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Container(
-                          //color: Colors.white,
+                            //color: Colors.white,
                             alignment: Alignment.center,
                             margin: const EdgeInsets.only(top: 20),
                             child: const CircularProgressIndicator());
                       }
                       if (!snapshot.hasData || snapshot.data == null) {
                         return Container(
-                          //color: Colors.white,
+                            //color: Colors.white,
                             alignment: Alignment.center,
                             margin: const EdgeInsets.only(top: 20),
                             child: const Text('No data.'));
@@ -97,9 +76,7 @@ class _TeacherAccountState extends State<TeacherAccount> {
                             var data = snapshot.data[index];
 
                             return InkWell(
-                              onTap: () {
-
-                              },
+                              onTap: () {},
                               child: Card(
                                 margin: const EdgeInsets.all(10),
                                 color: Colors.white,
@@ -121,14 +98,12 @@ class _TeacherAccountState extends State<TeacherAccount> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       subtitle: Text(
-                                        'title: '
-                                        '${data['title']}',
+                                        'department: '
+                                        '${data['department']}',
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
-
                                       ),
-
                                     )
                                   ],
                                 ),
@@ -139,9 +114,6 @@ class _TeacherAccountState extends State<TeacherAccount> {
               ],
             ),
           ),
-
-
-
         ]));
   }
 }
