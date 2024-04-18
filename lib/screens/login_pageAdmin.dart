@@ -37,51 +37,44 @@ class _LoginPageState extends State<LoginPageAdmin> {
   TextEditingController passwordController = TextEditingController();
   bool loading = false;
 
-  // Function to show loading indicator
-  void signUserIn() async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
-  }
-
   // Function to handle the login process
-  void handleLogin() async {
+  Future<void> handleLogin() async {
+    // Show loading indicator
     setState(() {
-      loading = true; // Show loading indicator
+      loading = true;
     });
 
     String username = usernameController.text.trim();
     String password = passwordController.text.trim();
 
-    // Validate username and password
-    if (username.isNotEmpty && password.isNotEmpty) {
-      try {
-        String response = await login(username, password);
-        if (response != '[]') {
-          // Navigate to the dashboard page upon successful login
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => Dashboard()));
-        } else {
-          // Print error message if user not found
-          print("User not found");
-        }
-      } catch (e) {
-        // Handle login errors gracefully
-        print('Login Error: $e');
-      }
-    } else {
-      // Show error message if username or password is empty
-      print('Please enter username and password');
-    }
+    try {
+      // Call the login function
+      String response = await login(username, password);
 
-    setState(() {
-      loading = false; // Hide loading indicator
-    });
+      // Check if the widget is still mounted before calling setState
+      if (mounted) {
+        setState(() {
+          loading = false; // Hide loading indicator
+        });
+      }
+
+      if (response != '[]') {
+        // Navigate to the dashboard page upon successful login
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => Dashboard()));
+      } else {
+        // Print error message if user not found
+        print("User not found");
+      }
+    } catch (e) {
+      // Handle login errors gracefully
+      print('Login Error: $e');
+      if (mounted) {
+        setState(() {
+          loading = false; // Hide loading indicator
+        });
+      }
+    }
   }
 
   @override
@@ -204,6 +197,12 @@ class _LoginPageState extends State<LoginPageAdmin> {
                         ),
                       ),
                     ),
+                    // Show loading indicator if loading is true
+                    if (loading)
+                      const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: CircularProgressIndicator(),
+                      ),
                   ],
                 ),
               )

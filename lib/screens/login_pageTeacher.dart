@@ -1,26 +1,27 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:university_management/teacher/teacher_page.dart';
 
-// Separate login logic into a separate function
-Future<String> login(int teacherID, String password) async {
+Future<Map<String, dynamic>> login(int teacherID, String password) async {
   try {
-    // Make HTTP POST request to the login API endpoint
     var response = await http.post(
       Uri.parse(
           "http://10.0.2.2/universitymanagement_API/Teacher_api/login_teacher.php"),
-      body: {'teacherID': teacherID.toString(), 'password': password},
+      body: {
+        'teacherID': teacherID.toString(),
+        'password': password,
+      },
     );
 
     if (response.statusCode == 200) {
-      // If login is successful, return the response body
-      return response.body;
+      return json.decode(response.body); // Decode JSON response
     } else {
-      // If there's an error, throw an exception
       throw Exception('Failed to login');
     }
   } catch (e) {
-    // Handle network errors or server errors gracefully
+    print('Error during login: $e');
     throw Exception('Failed to login. Please check your internet connection.');
   }
 }
@@ -37,44 +38,39 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
   bool loading = false;
 
-  // Function to handle the login process
   void handleLogin() async {
     setState(() {
-      loading = true; // Show loading indicator
+      loading = true;
     });
 
     int? teacherID = int.tryParse(teacherIDController.text.trim());
     String password = passwordController.text.trim();
 
-    // Validate username and password
     if (teacherID != null && teacherID > 0 && password.isNotEmpty) {
       try {
-        String response = await login(teacherID, password);
-        if (response != '[]') {
-          // Navigate to the dashboard page upon successful login
+        Map<String, dynamic> response = await login(teacherID, password);
+        if (response['success']) {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => TeacherPage(
-                    teacherId: teacherID, // Pass the actual teacherID
-                  )));
+            builder: (context) => TeacherPage(
+              teacherId: teacherID,
+            ),
+          ));
+          showSnackbar('Login successful');
         } else {
-          // Show error message if user not found
-          showSnackbar('Invalid username or password. Please try again.');
+          showSnackbar(response['message']);
         }
       } catch (e) {
-        // Handle login errors gracefully
         showSnackbar('Failed to login. Please try again later.');
       }
     } else {
-      // Show error message if username or password is empty
       showSnackbar('Please enter a valid username and password.');
     }
 
     setState(() {
-      loading = false; // Hide loading indicator
+      loading = false;
     });
   }
 
-  // Function to show a snackbar with the given message
   void showSnackbar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -92,14 +88,16 @@ class _LoginPageState extends State<LoginPage> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
                 Color.fromARGB(220, 6, 34, 190),
                 Color.fromARGB(255, 226, 248, 85),
                 Color.fromARGB(255, 255, 251, 248),
-              ])),
+              ],
+            ),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -143,8 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       width: 250,
                       child: TextFormField(
-                        controller:
-                            teacherIDController, // Assign email controller
+                        controller: teacherIDController,
                         decoration: const InputDecoration(
                           labelText: 'TeacherID',
                         ),
@@ -153,8 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       width: 250,
                       child: TextFormField(
-                        controller:
-                            passwordController, // Assign password controller
+                        controller: passwordController,
                         obscureText: true,
                         decoration: const InputDecoration(
                           labelText: 'Password',
@@ -193,14 +189,17 @@ class _LoginPageState extends State<LoginPage> {
                             child: const Text(
                               'Login',
                               style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
+                    if (loading)
+                      CircularProgressIndicator(), // Show loading indicator
                   ],
                 ),
               )

@@ -32,17 +32,17 @@ class _TeacherPageState extends State<TeacherPage> {
           future: _teacherCoursesFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (snapshot.hasData) {
               List<dynamic> responseList = snapshot.data ?? [];
               return Column(
                 children: <Widget>[
-                  CategoriesScroller(),
+                  const CategoriesScroller(),
                   Expanded(
                     child: responseList.isEmpty
-                        ? Center(
+                        ? const Center(
                             child: Text(
                               'No courses selected',
                               style: TextStyle(
@@ -81,7 +81,7 @@ class _TeacherPageState extends State<TeacherPage> {
                                             CrossAxisAlignment.start,
                                         children: <Widget>[
                                           Text(
-                                            course['courseName'] ?? '',
+                                            course['courseName'],
                                             style: const TextStyle(
                                                 fontSize: 28,
                                                 fontWeight: FontWeight.bold),
@@ -104,7 +104,7 @@ class _TeacherPageState extends State<TeacherPage> {
                 ],
               );
             } else {
-              return Center(child: Text('No data available'));
+              return const Center(child: Text('No data available'));
             }
           },
         ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:university_management/Admin/Create_Account/admin_account/aa.dart';
+import 'package:university_management/Admin/Create_Account/tab_bar.dart';
 
 class CreateAdminAccount extends StatefulWidget {
   const CreateAdminAccount({Key? key}) : super(key: key);
@@ -105,7 +105,7 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
                         userType); // Call the function to register the user
                   },
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                       color: Colors.white,
                     ),
@@ -167,7 +167,7 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
       // Navigate to the AdminAccount page
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => AdminAccount()),
+        MaterialPageRoute(builder: (context) => TabCreataAccount()),
       );
     } else {
       // Show an error message if any field is empty
@@ -184,7 +184,7 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
     String phone = phoneNumberController.text;
     String address = addressController.text;
 
-    var url = "http://10.0.2.2/api/registrationFomAdmin.php";
+    var url = "http://10.0.2.2/api/registrationFormAdmin.php";
     var response = await http.post(Uri.parse(url), body: {
       'fullname': fullName.toString(),
       'username': userName.toString(),
