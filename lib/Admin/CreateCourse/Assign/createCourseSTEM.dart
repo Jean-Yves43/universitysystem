@@ -26,7 +26,7 @@ class _STEMCourseAccountState extends State<STEMCourseAccount> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('BSS COURSE'),
+        title: Text('STEM COURSE'),
       ),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 30),

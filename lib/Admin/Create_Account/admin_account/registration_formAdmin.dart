@@ -13,7 +13,7 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
   TextEditingController fullNameController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController TitleController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   String userType = 'Student';
@@ -90,7 +90,7 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  controller: TitleController,
+                  controller: titleController,
                   decoration: const InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -101,8 +101,7 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
                 const SizedBox(height: 55),
                 MaterialButton(
                   onPressed: () {
-                    _registerUser(
-                        userType); // Call the function to register the user
+                    saveUser(); // Call the function to register the user
                   },
                   child: Container(
                     decoration: const BoxDecoration(
@@ -128,11 +127,11 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
     );
   }
 
-  void _registerUser(String userType) async {
+  void _registerUser() async {
     String fullName = fullNameController.text.trim();
     String username = usernameController.text.trim();
     String password = passwordController.text.trim();
-    String title = TitleController.text.trim();
+    String title = titleController.text.trim();
     String address = addressController.text.trim();
     String phone = phoneNumberController.text.trim();
 
@@ -157,7 +156,7 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
       fullNameController.clear();
       usernameController.clear();
       passwordController.clear();
-      TitleController.clear();
+      titleController.clear();
       addressController.clear();
       phoneNumberController.clear();
 
@@ -180,7 +179,7 @@ class _CreateAdminAccountState extends State<CreateAdminAccount> {
     String fullName = fullNameController.text;
     String userName = usernameController.text;
     String password = passwordController.text;
-    String title = TitleController.text;
+    String title = titleController.text;
     String phone = phoneNumberController.text;
     String address = addressController.text;
 
